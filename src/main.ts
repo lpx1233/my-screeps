@@ -1,4 +1,4 @@
-import { ErrorMapper } from "utils/ErrorMapper";
+// import { ErrorMapper } from "utils/ErrorMapper";
 import { Harvester } from "screeps/Harvester";
 import { ID } from "utils/helpers";
 
@@ -10,7 +10,7 @@ const config = {
 // main loop
 // When compiling TS to JS and bundling with rollup, the line numbers and file names in error messages change
 // This utility uses source maps to get the line numbers and file names of the original, TS source code
-export const loop = ErrorMapper.wrapLoop(() => {
+export const loop = () => {
   console.log(`Current game tick is ${Game.time}`);
 
   // instaniate screeps with specific types
@@ -30,7 +30,7 @@ export const loop = ErrorMapper.wrapLoop(() => {
   if (harvesters.length < config.Harvester) {
     let n = config.Harvester - harvesters.length;
     // get all idle spawns
-    let idleSpawns = spawns.filter((sp: StructureSpawn) => sp.spawning != null);
+    let idleSpawns = spawns.filter((sp: StructureSpawn) => sp.spawning == null);
     // dispatch task to spawns
     for (let i = 0; i < idleSpawns.length && i < n; i++) {
       Harvester.createHarvester(idleSpawns[i], "Harvester" + ID());
@@ -48,4 +48,4 @@ export const loop = ErrorMapper.wrapLoop(() => {
       delete Memory.creeps[name];
     }
   }
-});
+};
