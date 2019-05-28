@@ -1,10 +1,12 @@
-// import { ErrorMapper } from "utils/ErrorMapper";
 import { Harvester } from "screeps/Harvester";
+import { Builder } from "screeps/Builder";
+
 import { ID } from "utils/helpers";
 
 // overall config of number of each type of creeps
 const config = {
-  'Harvester': 1,
+  Harvester: 3,
+  Builder: 1
 };
 
 // main loop
@@ -15,11 +17,21 @@ export const loop = () => {
 
   // instaniate screeps with specific types
   let harvesters: Harvester[] = [];
+  let builders: Builder[] = [];
   for (const i in Game.creeps) {
-    if (Game.creeps[i].memory.role == 'Harvester') {
-      harvesters.push(new Harvester(Game.creeps[i]));
+    switch (Game.creeps[i].memory.role) {
+      case 'Harvester': {
+        harvesters.push(new Harvester(Game.creeps[i]));
+        break;
+      }
+      case 'Builder': {
+        builders.push(new Builder(Game.creeps[i]));
+        break;
+      }
+      // TODO: add other types of creep
+      default:
+        break;
     }
-    // TODO: add other types of creep
   }
 
   // start spawn screeps if need
@@ -36,10 +48,22 @@ export const loop = () => {
       Harvester.createHarvester(idleSpawns[i], "Harvester" + ID());
     }
   }
+  if (builders.length < config.Builder) {
+    let n = config.Builder - builders.length;
+    // get all idle spawns
+    let idleSpawns = spawns.filter((sp: StructureSpawn) => sp.spawning == null);
+    // dispatch task to spawns
+    for (let i = 0; i < idleSpawns.length && i < n; i++) {
+      Builder.createBuilder(idleSpawns[i], "Builder" + ID());
+    }
+  }
 
   // do work (harvest, build ...)
   for (let i = 0; i < harvesters.length; i++) {
     harvesters[i].findHarvestAndTransferEnergyTo(spawns[0]);
+  }
+  for (let i = 0; i < builders.length; i++) {
+    builders[i].upgradeControllerUsing(spawns[0]);
   }
 
   // Automatically delete memory of missing creeps
