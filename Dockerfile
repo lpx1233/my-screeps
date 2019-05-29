@@ -1,13 +1,16 @@
 FROM node:11
 
-RUN mkdir /my-screeps
-COPY . /my-screeps
-
 # install roll up
 RUN npm i -g rollup
 
-# install local deps
-WORKDIR /my-screeps
-RUN npm i
+# install other deps
+ADD package.json /tmp/package.json
+RUN cd /tmp && npm install
+RUN mkdir -p /my-screeps && cp -a /tmp/node_modules /my-screeps/
 
-CMD ["/bin/bash"]
+# copy project file
+COPY . /my-screeps
+WORKDIR /my-screeps
+
+ENTRYPOINT ["rollup"]
+CMD ["-c", "--environment", "DEST:main"]

@@ -14,19 +14,6 @@ export class Harvester {
   }
 
   // some action api
-  harvest(target: Source | Mineral): number {
-    return this.creep.harvest(target);
-  }
-
-  moveTo(target: RoomPosition | { pos: RoomPosition; }): number {
-    // TODO: optimize pathfinder using cache to reduce CPU usage
-    return this.creep.moveTo(target);
-  }
-
-  transfer(target: Creep | Structure | PowerCreep, resourceType: ResourceConstant): number {
-    return this.creep.transfer(target, resourceType);
-  }
-
   findHarvestAndTransferEnergyTo(spawn: StructureSpawn): void {
     if (this.creep.carry.energy < this.creep.carryCapacity) {
       var sources = this.creep.room.find(FIND_SOURCES);
