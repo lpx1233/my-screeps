@@ -34,7 +34,7 @@ export class Harvester {
         this.creep.moveTo(sources[0]);
       }
     }
-    else if (spawn.energy < spawn.energyCapacity) {
+    else {
       if (this.creep.transfer(spawn, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
         this.creep.moveTo(spawn);
       }

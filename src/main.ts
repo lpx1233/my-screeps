@@ -6,7 +6,7 @@ import { ID } from "utils/helpers";
 // overall config of number of each type of creeps
 const config = {
   Harvester: 3,
-  Builder: 1
+  Builder: 3
 };
 
 // main loop
@@ -35,26 +35,26 @@ export const loop = () => {
   }
 
   // start spawn screeps if need
+  // get all idle spawns
   let spawns: StructureSpawn[] = [];
   for (const i in Game.spawns) {
     spawns.push(Game.spawns[i]);
   }
+  let idleSpawns = spawns.filter((sp: StructureSpawn) => sp.spawning == null);
   if (harvesters.length < config.Harvester) {
     let n = config.Harvester - harvesters.length;
-    // get all idle spawns
-    let idleSpawns = spawns.filter((sp: StructureSpawn) => sp.spawning == null);
-    // dispatch task to spawns
+    // dispatch task to idleSpawns
     for (let i = 0; i < idleSpawns.length && i < n; i++) {
       Harvester.createHarvester(idleSpawns[i], "Harvester" + ID());
+      idleSpawns.splice(i, 1);
     }
   }
   if (builders.length < config.Builder) {
     let n = config.Builder - builders.length;
-    // get all idle spawns
-    let idleSpawns = spawns.filter((sp: StructureSpawn) => sp.spawning == null);
-    // dispatch task to spawns
+    // dispatch task to idleSpawns
     for (let i = 0; i < idleSpawns.length && i < n; i++) {
       Builder.createBuilder(idleSpawns[i], "Builder" + ID());
+      idleSpawns.splice(i, 1);
     }
   }
 
